@@ -1,0 +1,39 @@
+### 1. 获取用户信息 (查)
+GET http://localhost:8080/api/users/1001
+Accept: application/json
+
+###
+
+### 2. 新增用户 (增)
+POST http://localhost:8080/api/users
+Content-Type: application/json
+
+{
+  "id": 1001,
+  "name": "张三",
+  "age": 21
+}
+
+###
+
+### 3. 全量更新用户信息 (改)
+PUT http://localhost:8080/api/users/1001
+Content-Type: application/json
+
+{
+  "id": 1001,
+  "name": "李四",
+  "age": 22
+}
+
+###
+
+### 4. 删除用户 (删)
+DELETE http://localhost:8080/api/users/1001
+Accept: application/json
+
+###
+
+### 5. 触发异常拦截测试 (附加题验证 JSON 错误结构)
+GET http://localhost:8080/api/users/error
+Accept: application/json
