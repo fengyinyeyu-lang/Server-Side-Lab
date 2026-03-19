@@ -1,10 +1,63 @@
-### 1. 获取用户信息 (查)
-GET http://localhost:8080/api/users/1001
+### ========================================
+### 截图1组：未携带 Token 被拦截（401）
+### ========================================
+
+### 1-A. DELETE 未携带 Token → 应被拦截，返回 401
+DELETE http://localhost:8080/api/users/1001
 Accept: application/json
 
 ###
 
-### 2. 新增用户 (增)
+### 1-B. PUT 未携带 Token → 应被拦截，返回 401
+PUT http://localhost:8080/api/users/1001
+Content-Type: application/json
+
+{
+  "name": "李四",
+  "age": 22
+}
+
+###
+
+### ========================================
+### 截图2组：携带 Token 成功获取 JSON 数据（200）
+### ========================================
+
+### 2-A. DELETE 携带 Token → 应放行，返回 200
+DELETE http://localhost:8080/api/users/1001
+Accept: application/json
+Authorization: Bearer mock-token-abc123
+
+###
+
+### 2-B. PUT 携带 Token → 应放行，返回 200
+PUT http://localhost:8080/api/users/1001
+Content-Type: application/json
+Authorization: Bearer mock-token-abc123
+
+{
+  "name": "李四",
+  "age": 22
+}
+
+###
+
+### ========================================
+### 截图3组：无需 Token 直接放行的接口
+### ========================================
+
+### 3-A. 登录接口（WebConfig 路径放行）
+POST http://localhost:8080/api/users/login
+Content-Type: application/json
+
+{
+  "name": "张三",
+  "age": 21
+}
+
+###
+
+### 3-B. 注册接口（拦截器内 POST 动词放行）
 POST http://localhost:8080/api/users
 Content-Type: application/json
 
@@ -16,24 +69,16 @@ Content-Type: application/json
 
 ###
 
-### 3. 全量更新用户信息 (改)
-PUT http://localhost:8080/api/users/1001
-Content-Type: application/json
-
-{
-  "id": 1001,
-  "name": "李四",
-  "age": 22
-}
-
-###
-
-### 4. 删除用户 (删)
-DELETE http://localhost:8080/api/users/1001
+### 3-C. 查看用户信息（拦截器内 GET 动词放行）
+GET http://localhost:8080/api/users/1001
 Accept: application/json
 
 ###
 
-### 5. 触发异常拦截测试 (附加题验证 JSON 错误结构)
+### ========================================
+### 附加：异常处理测试
+### ========================================
+
+### 4. 触发异常拦截测试（验证全局异常处理器）
 GET http://localhost:8080/api/users/error
 Accept: application/json
