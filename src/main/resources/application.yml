@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: hello-server
+  datasource:
+    driver-class-name: org.postgresql.Driver   # 显式指定 PostgreSQL 驱动
+    url: jdbc:postgresql://localhost:5432/lab_db # 数据库地址
+    username: postgres
+    password: 123456   # 替换为你在 PgAdmin 中设置的实际密码

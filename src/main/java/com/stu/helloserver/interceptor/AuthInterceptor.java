@@ -31,10 +31,7 @@ public class AuthInterceptor implements HandlerInterceptor {
             return true;
         }
 
-        // 查看放行：GET /api/users/{id}
-        if ("GET".equalsIgnoreCase(method) && uri.startsWith("/api/users/")) {
-            return true;
-        }
+        // ========== 其余所有请求（包括 GET/PUT/DELETE）必须携带 Token ==========
 
         // ========== 严格校验：DELETE、PUT 等敏感操作必须携带 Token ==========
 

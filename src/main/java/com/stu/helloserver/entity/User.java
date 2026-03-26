@@ -1,22 +1,38 @@
 package com.stu.helloserver.entity;
 
-public class User {
-    private Long id;
-    private String name;
-    private Integer age;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 
-    // 无参构造方法
+/**
+ * 用户实体类，与数据库 sys_user 表结构严格一一对应。
+ */
+@TableName("sys_user") // 绑定数据库表名
+public class User {
+
+    /** 主键，自增 */
+    @TableId(type = IdType.AUTO)
+    private Long id;
+
+    /** 用户名 */
+    private String username;
+
+    /** 密码 */
+    private String password;
+
+    // ========== 构造方法 ==========
+
     public User() {
     }
 
-    // 全参构造方法
-    public User(Long id, String name, Integer age) {
+    public User(Long id, String username, String password) {
         this.id = id;
-        this.name = name;
-        this.age = age;
+        this.username = username;
+        this.password = password;
     }
 
-    // Getter & Setter
+    // ========== Getter & Setter ==========
+
     public Long getId() {
         return id;
     }
@@ -25,19 +41,19 @@ public class User {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getUsername() {
+        return username;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public Integer getAge() {
-        return age;
+    public String getPassword() {
+        return password;
     }
 
-    public void setAge(Integer age) {
-        this.age = age;
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
