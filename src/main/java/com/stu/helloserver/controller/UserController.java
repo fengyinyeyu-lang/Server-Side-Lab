@@ -41,16 +41,14 @@ public class UserController {
     }
 
     /**
-     * 3. 获取用户信息（查） - 用于测试拦截器放行
+     * 3. 根据 ID 查询用户 - 路径为 GET /api/users/{id}
+     * 使用 @PathVariable 获取 URL 中的路径参数。
      *
      * @param id 用户 ID
-     * @return 查询结果
+     * @return 查询结果（从数据库真实读取）
      */
     @GetMapping("/{id}")
-    public Result<String> getUser(@PathVariable("id") Long id) {
-        if (id == null || id <= 0) {
-            return Result.error("用户 ID 不合法");
-        }
-        return Result.success("查询成功，正在返回 ID 为 " + id + " 的用户信息");
+    public Result<String> getUserById(@PathVariable("id") Long id) {
+        return userService.getUserById(id);
     }
 }

@@ -5,7 +5,7 @@ import com.stu.helloserver.dto.UserDTO;
 
 /**
  * 用户业务逻辑接口
- * 定义注册、登录等核心业务方法。
+ * 定义注册、登录、查询等核心业务方法。
  */
 public interface UserService {
 
@@ -24,4 +24,12 @@ public interface UserService {
      * @return 登录结果（包含 Token）
      */
     Result<String> login(UserDTO userDTO);
+
+    /**
+     * 根据 ID 查询用户
+     *
+     * @param id 用户 ID
+     * @return 查询结果（返回用户名）
+     */
+    Result<String> getUserById(Long id);
 }
