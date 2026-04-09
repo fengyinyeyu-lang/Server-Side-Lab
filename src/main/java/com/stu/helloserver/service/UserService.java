@@ -1,7 +1,9 @@
 package com.stu.helloserver.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.stu.helloserver.common.Result;
 import com.stu.helloserver.dto.UserDTO;
+import com.stu.helloserver.entity.User;
 
 /**
  * 用户业务逻辑接口
@@ -32,4 +34,13 @@ public interface UserService {
      * @return 查询结果（返回用户名）
      */
     Result<String> getUserById(Long id);
+
+    /**
+     * 获取分页用户列表
+     *
+     * @param pageNum  默认页码
+     * @param pageSize 每页条数
+     * @return 统一结果包装的 Page 分页对象
+     */
+    Result<Page<User>> getUserPage(Integer pageNum, Integer pageSize);
 }

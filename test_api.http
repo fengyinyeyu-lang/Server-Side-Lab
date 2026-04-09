@@ -56,3 +56,9 @@ Authorization: Bearer xxx
 
 ### 8. 不带 Token 查询（应返回 401 凭证缺失）
 GET http://localhost:8080/api/users/1
+
+### 9. 分页获取用户列表 (请求页码:1，每页条数:2)
+GET http://localhost:8080/api/users/page?pageNum=1&pageSize=2
+Accept: application/json
+Authorization: Bearer 597704e3-ad01-4066-92a0-b339743a9ef8
+

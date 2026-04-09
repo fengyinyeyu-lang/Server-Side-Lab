@@ -1,7 +1,9 @@
 package com.stu.helloserver.controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.stu.helloserver.common.Result;
 import com.stu.helloserver.dto.UserDTO;
+import com.stu.helloserver.entity.User;
 import com.stu.helloserver.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -50,5 +52,19 @@ public class UserController {
     @GetMapping("/{id}")
     public Result<String> getUserById(@PathVariable("id") Long id) {
         return userService.getUserById(id);
+    }
+
+    /**
+     * 4. 获取用户分页列表 - 路径为 GET /api/users/page
+     *
+     * @param pageNum  当前页码（默认为 1）
+     * @param pageSize 每页条数（默认为 5）
+     * @return 分页结果数据
+     */
+    @GetMapping("/page")
+    public Result<Page<User>> getUserPage(
+            @RequestParam(defaultValue = "1") Integer pageNum,
+            @RequestParam(defaultValue = "5") Integer pageSize) {
+        return userService.getUserPage(pageNum, pageSize);
     }
 }
