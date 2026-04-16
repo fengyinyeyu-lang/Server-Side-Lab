@@ -10,8 +10,16 @@ import com.stu.helloserver.mapper.UserMapper;
 import com.stu.helloserver.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.redis.core.StringRedisTemplate;
 
+import java.util.concurrent.TimeUnit;
 import java.util.UUID;
+import cn.hutool.json.JSONUtil;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.stu.helloserver.entity.UserInfo;
+import com.stu.helloserver.mapper.UserInfoMapper;
+import com.stu.helloserver.vo.UserDetailVO;
 
 /**
  * 用户业务逻辑实现类
@@ -22,6 +30,14 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserMapper userMapper; // 注入真正的数据库访问层
+
+    @Autowired
+    private UserInfoMapper userInfoMapper;
+
+    @Autowired
+    private StringRedisTemplate redisTemplate;
+
+    private static final String CACHE_KEY_PREFIX = "user:detail:";
 
     @Override
     public Result<String> register(UserDTO userDTO) {
@@ -110,5 +126,74 @@ public class UserServiceImpl implements UserService {
 
         // 3. 将分页查询结果包装成统一返回对象
         return Result.success(userPage);
+    }
+
+    @Override
+    public Result<UserDetailVO> getUserDetail(Long userId) {
+        String key = CACHE_KEY_PREFIX + userId;
+        // 1. 先查缓存
+        String json = redisTemplate.opsForValue().get(key);
+        if (json != null && !json.isBlank()) {
+            try {
+                UserDetailVO cacheVO = JSONUtil.toBean(json, UserDetailVO.class);
+                return Result.success(cacheVO);
+            } catch (Exception e) {
+                // 缓存数据异常，删掉脏缓存，继续查数据库
+                redisTemplate.delete(key);
+            }
+        }
+        // 2. 查数据库
+        UserDetailVO detail = userInfoMapper.getUserDetail(userId);
+        if (detail == null) {
+            return Result.error(ResultCode.USER_NOT_EXIST);
+        }
+        // 3. 写缓存
+        redisTemplate.opsForValue().set(
+                key,
+                JSONUtil.toJsonStr(detail),
+                10,
+                TimeUnit.MINUTES
+        );
+        return Result.success(detail);
+    }
+
+    @Override
+    @Transactional
+    public Result<String> updateUserInfo(UserInfo userInfo) {
+        // 参数校验，userInfo不能为空，并且 userId不能为空，后面删除Redis缓存时用
+        if (userInfo == null || userInfo.getUserId() == null) {
+            return Result.error("参数错误");
+        }
+        // 先尝试更新数据库
+        LambdaUpdateWrapper<UserInfo> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.eq(UserInfo::getUserId, userInfo.getUserId());
+        int updatedCount = userInfoMapper.update(userInfo, updateWrapper);
+        if (updatedCount == 0) {
+            // 如果查不到记录说明是第一次保存扩展信息，执行插入
+            userInfoMapper.insert(userInfo);
+        }
+        // 删除缓存
+        String key = CACHE_KEY_PREFIX + userInfo.getUserId();
+        redisTemplate.delete(key);
+        return Result.success("更新成功");
+    }
+
+    @Override
+    @Transactional
+    public Result<String> deleteUser(Long userId) {
+        if (userId == null) {
+            return Result.error("参数错误");
+        }
+        int rows = userMapper.deleteById(userId);
+        if (rows > 0) {
+            LambdaQueryWrapper<UserInfo> wrapper = new LambdaQueryWrapper<>();
+            wrapper.eq(UserInfo::getUserId, userId);
+            userInfoMapper.delete(wrapper);
+            
+            String key = CACHE_KEY_PREFIX + userId;
+            redisTemplate.delete(key);
+            return Result.success("删除成功");
+        }
+        return Result.error("删除失败");
     }
 }

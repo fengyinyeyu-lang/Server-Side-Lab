@@ -62,3 +62,23 @@ GET http://localhost:8080/api/users/page?pageNum=1&pageSize=2
 Accept: application/json
 Authorization: Bearer 597704e3-ad01-4066-92a0-b339743a9ef8
 
+### ===== 任务 7：Redis 缓存与多表联查测试 =====
+
+### 10. 查询用户详情（触发连表查询并写入 Redis 缓存）
+GET http://localhost:8080/api/users/3/detail
+Authorization: Bearer 597704e3-ad01-4066-92a0-b339743a9ef8
+
+### 11. 更新用户扩展信息（触发更新 DB 并删除 Redis 缓存脏数据）
+PUT http://localhost:8080/api/users/3/detail
+Content-Type: application/json
+Authorization: Bearer 597704e3-ad01-4066-92a0-b339743a9ef8
+
+{
+  "realName": "张三（更新测试）",
+  "phone": "13800138000",
+  "address": "更新后的南京市江宁区"
+}
+
+### 12. 删除用户及扩展信息（触发删除 DB 及缓存）
+DELETE http://localhost:8080/api/users/3
+Authorization: Bearer 597704e3-ad01-4066-92a0-b339743a9ef8

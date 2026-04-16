@@ -43,4 +43,19 @@ public interface UserService {
      * @return 统一结果包装的 Page 分页对象
      */
     Result<Page<User>> getUserPage(Integer pageNum, Integer pageSize);
+
+    /**
+     * 获取用户详情（多表联查 + Redis缓存）
+     */
+    Result<com.stu.helloserver.vo.UserDetailVO> getUserDetail(Long userId);
+
+    /**
+     * 更新用户扩展信息
+     */
+    Result<String> updateUserInfo(com.stu.helloserver.entity.UserInfo userInfo);
+
+    /**
+     * 删除用户
+     */
+    Result<String> deleteUser(Long userId);
 }
