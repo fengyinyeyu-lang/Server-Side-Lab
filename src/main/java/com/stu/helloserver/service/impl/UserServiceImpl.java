@@ -20,6 +20,7 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.stu.helloserver.entity.UserInfo;
 import com.stu.helloserver.mapper.UserInfoMapper;
 import com.stu.helloserver.vo.UserDetailVO;
+import com.stu.helloserver.security.JwtUtil;
 
 /**
  * 用户业务逻辑实现类
@@ -27,6 +28,9 @@ import com.stu.helloserver.vo.UserDetailVO;
  */
 @Service
 public class UserServiceImpl implements UserService {
+
+    @Autowired
+    private JwtUtil jwtUtil;
 
     @Autowired
     private UserMapper userMapper; // 注入真正的数据库访问层
@@ -94,8 +98,8 @@ public class UserServiceImpl implements UserService {
         }
 
         // 4. 生成 Token 并返回
-        String token = "Bearer " + UUID.randomUUID().toString();
-        return Result.success(token);
+        String jwt = jwtUtil.generateToken(userDTO.getUsername());
+        return Result.success(jwt);
     }
 
     @Override

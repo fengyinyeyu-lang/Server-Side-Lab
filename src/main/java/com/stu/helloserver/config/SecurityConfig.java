@@ -9,10 +9,16 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import com.stu.helloserver.security.JwtAuthenticationFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+    @Autowired
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -27,6 +33,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/api/users/login").permitAll()
                 .anyRequest().authenticated() // 其他所有请求都必须先认证
             )
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // 将 JWT 过滤器置于用户名密码过滤器之前
             .formLogin(AbstractHttpConfigurer::disable) // 关闭 Spring Security 默认登录页
             .httpBasic(AbstractHttpConfigurer::disable); // 关闭 httpBasic 认证
         

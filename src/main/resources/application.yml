@@ -16,3 +16,9 @@ spring:
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+# JWT 相关配置
+security:
+  jwt:
+    secret: a-very-secure-secret-key-that-is-at-least-32-bytes-long # 至少32字节的签名密钥
+    expiration-millis: 7200000 # 2小时过期时间，单位毫秒
