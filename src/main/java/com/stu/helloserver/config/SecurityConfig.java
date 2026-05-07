@@ -31,6 +31,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth // 重点：配置接口访问规则
                 .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/users/login").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/chat").permitAll() // 放行聊天接口
                 .anyRequest().authenticated() // 其他所有请求都必须先认证
             )
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // 将 JWT 过滤器置于用户名密码过滤器之前

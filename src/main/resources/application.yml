@@ -11,6 +11,10 @@ spring:
       host: 127.0.0.1
       port: 6379
       database: 0
+  # Spring AI DashScope（Qwen 大模型）配置
+  ai:
+    dashscope:
+      api-key: ${DASHSCOPE_API_KEY}
 
 # MyBatis-Plus 配置：开启 SQL 日志输出，便于调试
 mybatis-plus:

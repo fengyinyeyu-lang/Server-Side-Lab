@@ -45,3 +45,13 @@ Accept: application/json
 GET http://localhost:8080/api/users/page
 Authorization: Bearer abcdefg.123456.invalidtoken
 Accept: application/json
+
+### 5. 测试 Qwen 基础聊天功能 (【实验任务 10】)
+# 请求地址: /api/chat
+# 预期结果: 返回 Result 封装的 ChatResponseVO，包含 question 和 answer
+POST http://localhost:8080/api/chat
+Content-Type: application/json
+
+{
+  "message": "请用一句话介绍你自己"
+}
