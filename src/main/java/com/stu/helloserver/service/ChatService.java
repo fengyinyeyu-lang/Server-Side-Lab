@@ -1,16 +1,20 @@
 package com.stu.helloserver.service;
 
+import com.stu.helloserver.dto.ChatRequestDTO;
+import com.stu.helloserver.vo.ChatResponseVO;
+
 /**
  * 聊天服务接口
- * 定义与大模型交互的聊天方法
+ * 定义与大模型交互的聊天方法，支持多轮会话上下文
  */
 public interface ChatService {
 
     /**
-     * 向大模型发送消息并获取回复
+     * 根据请求 DTO 进行聊天，支持会话上下文管理
      *
-     * @param message 用户输入的消息内容，不能为空
-     * @return 大模型返回的回答文本
+     * @param requestDTO 包含 sessionId 和 message 的聊天请求
+     * @return 封装了问题和回答的响应 VO
      */
-    String chat(String message);
+    ChatResponseVO chat(ChatRequestDTO requestDTO);
 }
+

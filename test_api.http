@@ -46,7 +46,7 @@ GET http://localhost:8080/api/users/page
 Authorization: Bearer abcdefg.123456.invalidtoken
 Accept: application/json
 
-### 5. 测试 Qwen 基础聊天功能 (【实验任务 10】)
+### 5. 测试 Qwen 基础聊天功能 (【实验任务 10】- 不带 sessionId，向后兼容)
 # 请求地址: /api/chat
 # 预期结果: 返回 Result 封装的 ChatResponseVO，包含 question 和 answer
 POST http://localhost:8080/api/chat
@@ -55,3 +55,42 @@ Content-Type: application/json
 {
   "message": "请用一句话介绍你自己"
 }
+
+###
+
+### 6. 测试多轮对话 - 第一轮 (【实验任务 11】单轮测试)
+# 使用 sessionId 标识会话，系统会将对话记录存入 Redis
+# 预期结果: 正常返回回答，Redis 中生成 chat:session:test001 记录
+POST http://localhost:8080/api/chat
+Content-Type: application/json
+
+{
+  "sessionId": "test001",
+  "message": "这是服务端课程,你是谁?"
+}
+
+###
+
+### 7. 测试多轮对话 - 第二轮 (【实验任务 11】多轮测试)
+# 使用相同的 sessionId，验证系统能否记住上一轮的上下文
+# 预期结果: 模型能结合上一轮的语境继续回答，表现出连续上下文理解能力
+POST http://localhost:8080/api/chat
+Content-Type: application/json
+
+{
+  "sessionId": "test001",
+  "message": "之前和你聊过什么?根据聊天历史,这是什么课程?"
+}
+
+###
+
+### 8. 测试多轮对话 - 第三轮 (【实验任务 11】继续追问)
+# 继续使用相同 sessionId，验证更多轮次的上下文保持
+POST http://localhost:8080/api/chat
+Content-Type: application/json
+
+{
+  "sessionId": "test001",
+  "message": "请总结一下我们之前聊了哪些内容"
+}
+
